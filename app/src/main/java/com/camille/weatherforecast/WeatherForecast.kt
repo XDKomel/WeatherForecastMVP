@@ -1,6 +1,8 @@
 package com.camille.weatherforecast
 
-import kotlin.math.roundToInt
+import android.util.Log
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.random.Random
 
 class WeatherForecast (current_temp: Temp = Temp(), place: Place = Place()) {
@@ -46,20 +48,23 @@ class Temp (
     var unit: Unit = unit
     var description: String = description
     fun random() {
-        temp_curr = unit.parseNumber(randomTempInKelvin())
-        temp_high = temp_curr + randomDeviation(10)
-        temp_low = temp_curr - randomDeviation(10)
-        feels_like = temp_curr - randomDeviation(4)
+        temp_curr = unit.parseNumber(randomTempInKelvin()).roundTo(1)
+        temp_high = (temp_curr + randomDeviation(3)).roundTo(1)
+        temp_low = (temp_curr - randomDeviation(3)).roundTo(1)
+        feels_like = (temp_curr - randomDeviation(4)).roundTo(1)
         description = descriptions.random()
-
+        Log.i("INFO", "parse from ${randomTempInKelvin()}")
     }
     fun randomTempInKelvin(): Double {
-        return (Random.nextInt(253, 306) * 100.0) / 100.0
+        return randomDouble(253, 306)
     }
     fun randomDeviation(till: Int): Double {
-        return (Random.nextInt(0, till) * 100) / 100.0
+        return randomDouble(0, till)
     }
-    val descriptions = listOf<String>("Sunny", "Foggy", "Cloudy")
+    fun randomDouble(from: Int, to: Int): Double {
+        return Random.nextDouble(from.toDouble(), to.toDouble())
+    }
+    val descriptions = listOf("Sunny", "Foggy", "Cloudy")
 }
 
 class Place (
@@ -68,4 +73,8 @@ class Place (
     var name: String = name
     val places = listOf("Moscow", "Kazan", "Saint Petersburg", "Krasnoyarsk", "Makhachkala", "Innopolis")
     fun random() { name = places.random() }
+}
+
+fun Double.roundTo(n : Int) : Double {
+    return "%.${n}f".format(this).toDouble()
 }

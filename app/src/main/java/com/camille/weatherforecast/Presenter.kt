@@ -18,7 +18,7 @@ class Presenter (
     }
 
     fun parseTemp(value: Double): String {
-        return "${value}°${weatherForecast.current_temp.unit.representation}"
+        return "${if (value>0) "+" else "–"}${if (value>0) value else -value}°${weatherForecast.current_temp.unit.representation}"
     }
 
     fun parseDescription(): String {
