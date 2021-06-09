@@ -1,5 +1,8 @@
 package com.camille.weatherforecast
 
+import android.util.Log
+import kotlin.math.absoluteValue
+
 class Presenter (
     weatherForecast: WeatherForecast = WeatherForecast()
 ) {
@@ -17,8 +20,19 @@ class Presenter (
         return weatherForecast.place.name
     }
 
+    fun parseTempNumber(value: Double): String {
+        return (
+            if (value > 0) "+"
+            else if (value < 0) "–"
+            else ""
+        ).toString() + (
+            if (value.toInt().toDouble() == value) value.absoluteValue.toInt()
+            else value.absoluteValue
+        ).toString()
+    }
+
     fun parseTemp(value: Double): String {
-        return "${if (value>0) "+" else "–"}${if (value>0) value else -value}°${weatherForecast.current_temp.unit.representation}"
+        return "${parseTempNumber(value)}°${weatherForecast.current_temp.unit.representation}"
     }
 
     fun parseDescription(): String {
